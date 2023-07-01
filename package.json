@@ -1,0 +1,28 @@
+{
+  "name": "remak-embedding",
+  "version": "1.0.0",
+  "description": "remak embedding lambda function with SQS",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "dev": "serverless invoke local -f remak-embedding -p test/testEvent/textDirect.json",
+    "prepare": "husky install",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "commitlint-config-git-commit-emoji": "^1.0.0",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.8",
+    "serverless-lift": "^1.1.2",
+    "serverless-plugin-typescript": "^2.1.5",
+    "typescript": "^5.1.5"
+  },
+  "dependencies": {
+    "langchain": "^0.0.98"
+  }
+}

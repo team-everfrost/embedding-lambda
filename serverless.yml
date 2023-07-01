@@ -1,0 +1,21 @@
+service: aws-node-sqs-worker-project
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  remak-embedding:
+    handler: src/index.handler
+
+constructs:
+  remak-embedding-queue:
+    type: queue
+    worker:
+      handler: src/index.handler
+      maxConcurrency: 100
+
+plugins:
+  - serverless-lift
+  - serverless-plugin-typescript
