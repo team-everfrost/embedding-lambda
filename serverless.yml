@@ -1,4 +1,4 @@
-service: aws-node-sqs-worker-project
+service: remak-embed
 frameworkVersion: '3'
 
 provider:
@@ -7,13 +7,13 @@ provider:
 
 functions:
   remak-embedding:
-    handler: src/index.handler
+    handler: src/handler.handler
 
 constructs:
   remak-embedding-queue:
     type: queue
     worker:
-      handler: src/index.handler
+      handler: src/handler.handler
       maxConcurrency: 100
 
 plugins:
