@@ -9,10 +9,11 @@
     "module": "NodeNext",
     "moduleResolution": "node",
     "rootDir": "./",
-    "lib": [
-      "ES2020",
-      "DOM"
-    ]
+    "lib": ["ES2020"],
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ],
   },
   "include": [
     "src/**/*"
