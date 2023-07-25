@@ -2,11 +2,7 @@ import ServerlessClient from 'serverless-postgres';
 import { EmbeddedText } from '../embed/embed';
 
 export const client = new ServerlessClient({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT),
+  connectionString: process.env.DB_URL,
   ssl: true,
   application_name: 'embedding-lambda',
   debug: true,
