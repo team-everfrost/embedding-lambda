@@ -10,7 +10,6 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
-    "dotenv": "^16.3.1",
     "openai": "^3.3.0",
     "serverless-postgres": "^2.1.0"
   },
@@ -23,8 +22,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
+    "serverless-dotenv-plugin": "^6.0.0",
     "serverless-lift": "^1.1.2",
     "serverless-plugin-typescript": "^2.1.5",
+    "serverless-prune-plugin": "^2.0.2",
     "typescript": "^5.1.5"
   }
 }

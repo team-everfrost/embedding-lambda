@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { createEmbeds } from './embed/embed';
 import { preprocess } from './embed/preprocess';
 import {

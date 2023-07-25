@@ -1,9 +1,29 @@
 service: remak-embed
 frameworkVersion: '3'
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  region: ap-northeast-2
+  timeout: 600
+  memorySize: 1024
+  environment:
+    NODE_ENV: 'production'
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+    DB_USER: ${env:DB_USER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_HOST: ${env:DB_HOST}
+    DB_PORT: ${env:DB_PORT}
+    DB_NAME: ${env:DB_NAME}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "s3:*"
+      Resource: "*"
+  logRetentionInDays: 14
 
 functions:
   remak-embedding:
@@ -14,15 +34,15 @@ constructs:
     type: queue
     worker:
       handler: src/handler.handler
-      maxConcurrency: 100
+      maxConcurrency: 50
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-lift
   - serverless-plugin-typescript
+  - serverless-prune-plugin
 
-package:
-  patterns:
-    - '!node_modules/.prisma/client/libquery_engine-*'
-    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
-    - '!node_modules/prisma/libquery_engine-*'
-    - '!node_modules/@prisma/engines/**'
+custom:
+  prune:
+    automatic: true
+    number: 3
