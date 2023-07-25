@@ -31,6 +31,7 @@ constructs:
     worker:
       handler: src/handler.handler
       maxConcurrency: 50
+      timeout: 600
 
 plugins:
   - serverless-dotenv-plugin
