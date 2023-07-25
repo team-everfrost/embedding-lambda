@@ -1,9 +1,9 @@
-name: Deploy master branch to dev
+name: Deploy main branch to dev
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
