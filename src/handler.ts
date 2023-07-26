@@ -12,8 +12,7 @@ export const handler = async (event) => {
   await client.connect();
 
   for (const record of event.Records) {
-    // const messageAttributes = record.messageAttributes;
-    const messageBody = record.body;
+    const messageBody = JSON.parse(record.body);
     const documentId = messageBody.documentId;
 
     // DB에서 Docid를 통해 가져오기
