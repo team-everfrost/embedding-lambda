@@ -3,7 +3,7 @@ import { EmbeddedText } from '../embed/embed';
 
 export const client = new ServerlessClient({
   connectionString: process.env.DB_URL,
-  // ssl: true,
+  ssl: true,
   application_name: 'embedding-lambda',
   // debug: true,
   delayMs: 3000,
