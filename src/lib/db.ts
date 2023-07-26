@@ -37,7 +37,6 @@ export const insertEmbeds = async (embeddedTexts: EmbeddedText[]) => {
 
   embeddedTexts.forEach((text, index) => {
     const valueIndex = index * 10 + 1; // PostgreSQL placeholders start from $1
-    //TODO: valueIndex9 추가해야함
     placeholders.push(
       `(
         $${valueIndex},
@@ -48,8 +47,8 @@ export const insertEmbeds = async (embeddedTexts: EmbeddedText[]) => {
         $${valueIndex + 5},
         $${valueIndex + 6},
         $${valueIndex + 7},
-        $${valueIndex + 8}
-        
+        $${valueIndex + 8},
+        $${valueIndex + 9}
       )`,
     );
 
@@ -62,12 +61,11 @@ export const insertEmbeds = async (embeddedTexts: EmbeddedText[]) => {
       text.startLineNumber,
       text.endPageNumber,
       text.endLineNumber,
-      // text.content,
+      text.content,
       JSON.stringify(text.vector),
     );
   });
 
-  //TODO: 빈자리에 content 추가하면 됨
   const text = `
     INSERT INTO embedded_text(
       document_id,
@@ -78,7 +76,7 @@ export const insertEmbeds = async (embeddedTexts: EmbeddedText[]) => {
       start_line_number,
       end_page_number,
       end_line_number,
-      
+      content,
       vector
     ) VALUES ${placeholders.join(', ')}
   `;
