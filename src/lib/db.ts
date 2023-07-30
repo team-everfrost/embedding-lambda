@@ -69,7 +69,7 @@ export const insertEmbeds = async (embeddedTexts: EmbeddedText[]) => {
   const text = `
     INSERT INTO embedded_text(
       document_id,
-      uid,
+      user_id,
       type,
       chapter,
       start_page_number,
