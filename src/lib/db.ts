@@ -83,3 +83,9 @@ export const insertEmbeds = async (embeddedTexts: EmbeddedText[]) => {
 
   await client.query(text, values);
 };
+
+export const deleteEmbeds = async (documentId: number) => {
+  await client.query('DELETE FROM embedded_text WHERE document_id = $1', [
+    documentId,
+  ]);
+};

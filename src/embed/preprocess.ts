@@ -10,7 +10,15 @@ interface Doc {
   user_id: string;
 }
 
-export const preprocess = async (doc: Doc): Promise<ParsedContent[]> => {
+export const clean = (doc: Doc) => {
+  const result = doc;
+  if (doc.type === DocType.WEBPAGE) {
+    result.content = doc.content.replace(/<[^>]*>?/gm, '');
+  }
+  return result;
+};
+
+export const parse = async (doc: Doc): Promise<ParsedContent[]> => {
   // IMAGE, FILE S3에서 로드
   if (doc.type === DocType.IMAGE || doc.type === DocType.FILE) {
     //TODO: S3에서 로드 구현

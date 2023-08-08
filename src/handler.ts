@@ -1,9 +1,10 @@
 import { createEmbeds } from './embed/embed';
-import { preprocess } from './embed/preprocess';
+import { clean, parse } from './embed/preprocess';
 import {
   Status,
   changeDocStatus,
   client,
+  deleteEmbeds,
   findDoc,
   insertEmbeds,
 } from './lib/db';
@@ -28,15 +29,23 @@ export const handler = async (event) => {
         continue;
     } catch (e) {
       console.error(e);
-      continue;
+      throw e; // 명시적으로 에러를 던져서 DLQ로 이동
     }
 
     // 해당 Doc의 상태를 처리중으로 변경
     await changeDocStatus(documentId, Status.EMBED_PROCESSING);
 
     try {
-      // TODO: 전처리 - Doc으로 변환
-      const parsedContent = await preprocess(doc);
+      // 문서 전처리
+      const cleanDoc = clean(doc);
+
+      // 문서 분할
+      const parsedContent = await parse(cleanDoc);
+
+      // 기존 임베딩 삭제
+      await deleteEmbeds(documentId);
+
+      // 임베딩
       const embeddedTexts = await createEmbeds(
         documentId,
         doc.user_id,
@@ -47,7 +56,7 @@ export const handler = async (event) => {
     } catch (e) {
       console.error(e);
       await changeDocStatus(documentId, Status.EMBED_REJECTED);
-      continue;
+      throw e; // 명시적으로 에러를 던져서 DLQ로 이동
     }
 
     // DB에 상태 저장
