@@ -1,6 +1,6 @@
 import { DocType, ParsedContent } from './embed';
 
-interface Doc {
+export interface Doc {
   document_id: string;
   title: string;
   type: DocType;

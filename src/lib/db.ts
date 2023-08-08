@@ -89,3 +89,41 @@ export const deleteEmbeds = async (documentId: number) => {
     documentId,
   ]);
 };
+
+export const changeSummary = async (documentId: number, summary: string) => {
+  await client.query('UPDATE document SET summary = $1 WHERE id = $2', [
+    summary,
+    documentId,
+  ]);
+};
+
+export const changeHashtags = async (
+  documentId: number,
+  userId: string,
+  hashtags: string[],
+) => {
+  // 기존 해시태그 연결 삭제
+  await client.query('DELETE FROM "_DocumentToTag" WHERE "A" = $1', [
+    documentId,
+  ]);
+
+  // 해시태그 upsert
+  const upsertQuery = `
+    INSERT INTO Tag (name, user_id, updated_at)
+    VALUES (unnest($1::text[]), $2, NOW())
+    ON CONFLICT (name, user_id)
+    DO UPDATE SET updated_at = NOW();
+  `;
+
+  await client.query(upsertQuery, [hashtags, userId]);
+
+  // 해시태그 연결
+  const connectQuery = `
+    INSERT INTO "_DocumentToTag" ("A", "B")
+    SELECT $1, id
+    FROM Tag
+    WHERE name = ANY($2::text[]) AND user_id = $3;
+  `;
+
+  await client.query(connectQuery, [documentId, hashtags, userId]);
+};
