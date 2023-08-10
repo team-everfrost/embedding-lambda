@@ -1,4 +1,4 @@
-import { Doc, ParsedContent } from '../../types';
+import { Doc, ParsedContent } from '../types';
 
 export const parseWebpage = async (doc: Doc) => {
   // HTML 태그 제거

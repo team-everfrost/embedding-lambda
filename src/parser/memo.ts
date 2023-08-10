@@ -1,4 +1,4 @@
-import { Doc, ParsedContent } from '../../types';
+import { Doc, ParsedContent } from '../types';
 
 export const parseMemo = async (doc: Doc) => {
   const content = doc.content;

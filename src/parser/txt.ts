@@ -1,5 +1,5 @@
-import { readFile } from '../../lib/s3';
-import { Doc, ParsedContent } from '../../types';
+import { readFile } from '../lib/s3';
+import { Doc, ParsedContent } from '../types';
 
 export const parseTxt = async (doc: Doc) => {
   const byteArray = await readFile(doc.doc_id);

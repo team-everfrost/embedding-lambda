@@ -1,7 +1,4 @@
 import { createEmbeds } from './embed/embed';
-import { parseMemo } from './embed/preprocess/memo';
-import { parseTxt } from './embed/preprocess/txt';
-import { parseWebpage } from './embed/preprocess/webpage';
 import {
   changeContent,
   changeDocStatus,
@@ -13,7 +10,8 @@ import {
   insertEmbeds,
 } from './lib/db';
 import { getSummary } from './lib/openai';
-import { Doc, ParsedContent, Status } from './types';
+import { parse } from './parser';
+import { Status } from './types';
 
 export const handler = async (event) => {
   await client.connect();
@@ -36,31 +34,8 @@ export const handler = async (event) => {
     await changeDocStatus(documentId, Status.EMBED_PROCESSING);
 
     try {
-      // 확장자: 파서 매핑
-      const fileParser = {
-        txt: parseTxt,
-      };
-
-      let parseFunc: (
-        doc: Doc,
-      ) => Promise<{ parsedContent: ParsedContent[]; content: string }>;
-      switch (doc.type) {
-        case 'MEMO':
-          parseFunc = parseMemo;
-          break;
-        case 'WEBPAGE':
-          parseFunc = parseWebpage;
-          break;
-        case 'IMAGE':
-        case 'FILE':
-          const fileExtension = doc.title.split('.').pop().toLowerCase();
-          if (!(fileExtension in fileParser))
-            throw new Error('Not supported file type');
-          parseFunc = fileParser[fileExtension];
-          break;
-      }
-
-      const { parsedContent, content } = await parseFunc(doc);
+      // 나눠진 문서 내용, 전체 문서 내용
+      const { parsedContent, content } = await parse(doc);
 
       const tasks = [];
 
