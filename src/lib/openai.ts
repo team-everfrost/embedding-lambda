@@ -1,5 +1,4 @@
 import { Configuration, OpenAIApi } from 'openai';
-import { Doc } from '../embed/preprocess';
 
 const config = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -26,23 +25,22 @@ export const getEmbedding = async (text: string) => {
   }
 };
 
-export const getSummary = async (doc: Doc) => {
-  const title = doc.title;
+export const getSummary = async (title: string, content: string) => {
   // content 길이가 3000자 이상이면 앞 1000자, 중간 1000자, 뒤 1000자를 합쳐서 요약
-  const length = doc.content.length;
-  let content: string;
+  const length = content.length;
+  let inputContent: string;
   if (length > 3000) {
-    content =
-      doc.content.slice(0, 1000) +
+    inputContent =
+      content.slice(0, 1000) +
       '\n...\n' +
-      doc.content.slice(length / 2 - 500, length / 2 + 500) +
+      content.slice(length / 2 - 500, length / 2 + 500) +
       '\n...\n' +
-      doc.content.slice(length - 1000, length);
+      content.slice(length - 1000, length);
   } else {
-    content = doc.content;
+    inputContent = content;
   }
 
-  const input = title + '\n' + content;
+  const input = title + '\n' + inputContent;
 
   try {
     const model = 'gpt-3.5-turbo';

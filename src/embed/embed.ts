@@ -1,30 +1,5 @@
 import { getEmbedding } from '../lib/openai';
-
-export enum DocType {
-  MEMO = 'MEMO',
-  WEBPAGE = 'WEBPAGE',
-  IMAGE = 'IMAGE',
-  FILE = 'FILE',
-}
-
-export interface EmbeddedText {
-  documentId: string;
-  userId: string;
-  type: DocType;
-  chapter: string; // 챕터명, 소제목, ...
-  startPageNumber: number; // Memo와 웹페이지는 1로 고정
-  startLineNumber: number;
-  endPageNumber: number;
-  endLineNumber: number;
-  content: string;
-  vector: number[];
-}
-
-export interface ParsedContent {
-  chapter: string;
-  page: number;
-  content: string;
-}
+import { DocType, EmbeddedText, ParsedContent } from '../types';
 
 const chunkSize = 1024;
 const chunkOverlap = 100;
