@@ -31,7 +31,7 @@ functions:
   remak-embedding:
     handler: src/handler.handler
     layers:
-      - arn:aws:serverlessrepo:us-east-1:990551184979:applications/lambda-layer-canvas-nodejs
+      - ${env.NODE_CANVAS_LAYER}
 
 constructs:
   remak-embedding-queue:
@@ -41,7 +41,7 @@ constructs:
       maxConcurrency: 50
       timeout: 600
       layers:
-        - arn:aws:serverlessrepo:us-east-1:990551184979:applications/lambda-layer-canvas-nodejs
+        - ${env.NODE_CANVAS_LAYER}
 
 plugins:
   - serverless-dotenv-plugin
