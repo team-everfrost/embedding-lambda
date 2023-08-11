@@ -32,9 +32,9 @@ export const getSummary = async (title: string, content: string) => {
   if (length > 3000) {
     inputContent =
       content.slice(0, 1000) +
-      '\n...\n' +
+      '\n\n...\n\n' +
       content.slice(length / 2 - 500, length / 2 + 500) +
-      '\n...\n' +
+      '\n\n...\n\n' +
       content.slice(length - 1000, length);
   } else {
     inputContent = content;

@@ -6,6 +6,7 @@ export const enum Status {
 }
 
 export interface Doc {
+  id: number;
   doc_id: string;
   title: string;
   type: DocType;
@@ -13,6 +14,7 @@ export interface Doc {
   content: string;
   status: string;
   user_id: string;
+  uid: string;
 }
 
 export enum DocType {

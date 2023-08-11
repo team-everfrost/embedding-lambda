@@ -1,13 +1,18 @@
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 
 const region = 'ap-northeast-2';
-const bucket = process.env.S3_BUCKET;
+const fileBucket = process.env.S3_BUCKET;
+const thumbnailBucket = process.env.THUMBNAIL_BUCKET;
 
 const s3Client = new S3Client({ region });
 
 export const readFile = async (key: string) => {
   const command = new GetObjectCommand({
-    Bucket: bucket,
+    Bucket: fileBucket,
     Key: key,
   });
 
@@ -19,4 +24,18 @@ export const readFile = async (key: string) => {
   }
 
   return byteArray;
+};
+
+export const writeThumbnail = async (
+  uid: string,
+  key: string,
+  data: Buffer,
+) => {
+  const command = new PutObjectCommand({
+    Bucket: thumbnailBucket,
+    Key: uid + '/' + key + '.png',
+    Body: data,
+  });
+
+  await s3Client.send(command);
 };

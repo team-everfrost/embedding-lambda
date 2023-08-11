@@ -1,11 +1,13 @@
 import { Doc, ParsedContent } from '../types';
 import { parseMemo } from './memo';
+import { parsePdf } from './pdf';
 import { parseTxt } from './txt';
 import { parseWebpage } from './webpage';
 
 // 확장자: 파서 매핑
 const fileParser = {
   txt: parseTxt,
+  pdf: parsePdf,
 };
 
 export const parse = async (

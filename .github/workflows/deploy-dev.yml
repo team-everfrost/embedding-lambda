@@ -28,6 +28,11 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
+      - name: Cache apt packages
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
@@ -42,3 +47,5 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DB_URL: ${{ secrets.DB_URL_DEV }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          THUMBNAIL_BUCKET: ${{ secrets.THUMBNAIL_BUCKET }}
+          THUMBNAIL_DOMAIN: ${{ secrets.THUMBNAIL_DOMAIN }}

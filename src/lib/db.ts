@@ -11,8 +11,16 @@ export const client = new ServerlessClient({
 
 export const findDoc = async (documentId: number) => {
   const queryResult = await client.query(
-    'SELECT doc_id, title, type, url, content, status, user_id FROM document WHERE id = $1',
+    'SELECT id, doc_id, title, type, url, content, status, user_id FROM document WHERE id = $1',
     [documentId],
+  );
+  return queryResult.rows[0];
+};
+
+export const findUid = async (userId: number) => {
+  const queryResult = await client.query(
+    'SELECT uid FROM users WHERE id = $1',
+    [userId],
   );
   return queryResult.rows[0];
 };
@@ -20,6 +28,13 @@ export const findDoc = async (documentId: number) => {
 export const changeDocStatus = async (documentId: number, status: Status) => {
   await client.query('UPDATE document SET status = $1 WHERE id = $2', [
     status,
+    documentId,
+  ]);
+};
+
+export const changeThumbnailUrl = async (documentId: number, url: string) => {
+  await client.query('UPDATE document SET thumbnail_url = $1 WHERE id = $2', [
+    url,
     documentId,
   ]);
 };

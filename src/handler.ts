@@ -7,6 +7,7 @@ import {
   client,
   deleteEmbeds,
   findDoc,
+  findUid,
   insertEmbeds,
 } from './lib/db';
 import { getSummary } from './lib/openai';
@@ -23,6 +24,9 @@ export const handler = async (event) => {
 
     // DB에서 Docid를 통해 가져오기
     const doc = await findDoc(documentId);
+    // User UUID 찾아서 넣어줌
+    doc.uid = (await findUid(doc.user_id)).uid;
+
     // 중복 처리 방지
     if (
       doc?.status !== Status.EMBED_PENDING &&
