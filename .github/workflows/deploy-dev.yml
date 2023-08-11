@@ -49,4 +49,3 @@ jobs:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           THUMBNAIL_BUCKET: ${{ secrets.THUMBNAIL_BUCKET }}
           THUMBNAIL_DOMAIN: ${{ secrets.THUMBNAIL_DOMAIN }}
-          NODE_CANVAS_LAYER: ${{ secrets.NODE_CANVAS_LAYER }}
