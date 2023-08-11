@@ -28,10 +28,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      - name: Cache apt packages
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      # - name: Cache apt packages
+      #   uses: awalsh128/cache-apt-pkgs-action@latest
+      #   with:
+      #     packages: build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
