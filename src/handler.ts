@@ -22,6 +22,8 @@ export const handler = async (event) => {
       typeof record.body === 'string' ? JSON.parse(record.body) : record.body;
     const documentId = messageBody.documentId;
 
+    console.log('documentId: ' + documentId);
+
     // DB에서 Docid를 통해 가져오기
     const doc = await findDoc(documentId);
     // User UUID 찾아서 넣어줌
