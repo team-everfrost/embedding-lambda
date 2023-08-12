@@ -30,12 +30,6 @@ provider:
     - arn:aws:lambda:ap-northeast-2:518272060765:layer:canvas-nodejs:1
     - { Ref: PdfjsLambdaLayer }
 
-layers:
-  pdfjs:
-    path: pdfjs-layer
-    compatibleRuntimes:
-      - nodejs18.x
-
 functions:
   remak-embedding:
     handler: src/handler.handler

@@ -12,6 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.388.0",
     "openai": "^3.3.0",
+    "pdfjs-dist": "^3.9.179",
     "serverless-postgres": "^2.1.0"
   },
   "devDependencies": {
@@ -23,7 +24,6 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
-    "pdfjs-dist": "^3.9.179",
     "prettier": "^3.0.1",
     "serverless-dotenv-plugin": "^6.0.0",
     "serverless-lift": "^1.1.2",

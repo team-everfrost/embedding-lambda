@@ -35,13 +35,10 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm install --production
 
       - name: Run node-prune
         run: npx node-prune
-
-      - name: install pdfjs-dist
-        run: mkdir pdfjs-dist && cd pdfjs-dist && npm init -y && npm install pdfjs-dist && cd ..
 
       - name: serverless deploy
         uses: serverless/github-action@v3.2
