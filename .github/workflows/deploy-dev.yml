@@ -35,7 +35,7 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install --production
+        run: npm install --omit=dev --ignore-scripts
 
       - name: Run node-prune
         run: npx node-prune
