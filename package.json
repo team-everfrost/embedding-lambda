@@ -10,12 +10,12 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.388.0",
     "openai": "^3.3.0",
     "pdfjs-dist": "^3.9.179",
     "serverless-postgres": "^2.1.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.388.0",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "canvas": "^2.11.2",

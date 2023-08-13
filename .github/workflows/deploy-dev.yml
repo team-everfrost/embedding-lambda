@@ -35,10 +35,13 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install
+        run: npm install --omit=dev --ignore-scripts
 
-      - name: Delete lambda layer dependencies
-        run: npm remove canvas
+      - name: install serverless plugin
+        run: serverless plugin install -n serverless-dotenv-plugin && serverless plugin install -n serverless-lift && serverless plugin install -n serverless-plugin-typescript && serverless plugin install -n serverless-prune-plugin
+
+      - name: Delete unused pdfjs files
+        run: rm -rf node_modules/pdfjs-dist/build/*
 
       - name: serverless deploy
         uses: serverless/github-action@v3.2
