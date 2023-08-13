@@ -28,17 +28,17 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      # - name: Cache apt packages
-      #   uses: awalsh128/cache-apt-pkgs-action@latest
-      #   with:
-      #     packages: build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+      - name: Cache apt packages
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install --omit=dev --ignore-scripts
+        run: npm install
 
-      - name: Run node-prune
-        run: npx node-prune
+      - name: Delete lambda layer dependencies
+        run: npm remove canvas
 
       - name: serverless deploy
         uses: serverless/github-action@v3.2
