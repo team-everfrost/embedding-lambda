@@ -1,19 +1,21 @@
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf';
-import { TextItem } from 'pdfjs-dist/types/src/display/api';
 import { readFile } from '../lib/s3';
 import { Doc, ParsedContent } from '../types';
 
-const extractTextFromPDF = async (byteArray: Uint8Array) => {
+const extractTextFromPDF = async (byteArray: Uint8Array): Promise<string[]> => {
+  const { default: pdfjs } = await import(
+    'pdf-parse/lib/pdf.js/v1.10.100/build/pdf.js'
+  );
+  const { getDocument } = pdfjs;
+
   const pdf = await getDocument(byteArray).promise;
+
   const texts: string[] = [];
 
-  for (let i = 0; i < pdf.numPages; i++) {
-    const page = await pdf.getPage(i + 1);
-
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
-    const textItems = textContent.items;
-    const text = textItems.map((item: TextItem) => item.str).join(' ');
-    texts.push(text);
+    const pageTexts = textContent.items.map((item) => item.str);
+    texts.push(pageTexts.join(' '));
   }
 
   return texts;
@@ -26,7 +28,7 @@ export const parsePdf = async (
 
   const extractContent = await extractTextFromPDF(byteArray);
 
-  //추출된 텍스트 후처리 (여러칸 공백 한칸으로)
+  // Post-process the extracted text (replace multiple spaces with a single space)
   const content = extractContent.map((text) => text.replace(/\s+/g, ' '));
 
   const parsedContent: ParsedContent[] = [];
