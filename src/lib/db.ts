@@ -32,13 +32,6 @@ export const changeDocStatus = async (documentId: number, status: Status) => {
   ]);
 };
 
-export const changeThumbnailUrl = async (documentId: number, url: string) => {
-  await client.query('UPDATE document SET thumbnail_url = $1 WHERE id = $2', [
-    url,
-    documentId,
-  ]);
-};
-
 export const insertEmbeds = async (embeddedTexts: EmbeddedText[]) => {
   const values: any[] = [];
   const placeholders: string[] = [];

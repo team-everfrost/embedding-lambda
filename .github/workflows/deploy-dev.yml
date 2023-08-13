@@ -28,23 +28,9 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      - name: Cache apt packages
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-
-      - name: Install husky
-        run: npm i -g husky
-
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install --omit=dev
-
-      - name: install serverless plugin
-        run: npm i -D serverless-dotenv-plugin serverless-lift serverless-plugin-typescript serverless-prune-plugin
-
-      - name: Delete unused pdfjs files
-        run: rm -rf node_modules/pdfjs-dist/build/*
+        run: npm ci
 
       - name: serverless deploy
         uses: serverless/github-action@v3.2
@@ -56,5 +42,3 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DB_URL: ${{ secrets.DB_URL_DEV }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          THUMBNAIL_BUCKET: ${{ secrets.THUMBNAIL_BUCKET }}
-          THUMBNAIL_DOMAIN: ${{ secrets.THUMBNAIL_DOMAIN }}

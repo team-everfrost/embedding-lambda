@@ -10,7 +10,6 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
-    "canvas": "^2.11.2",
     "openai": "^3.3.0",
     "pdfjs-dist": "^3.9.179",
     "serverless-postgres": "^2.1.0"

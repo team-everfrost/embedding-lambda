@@ -15,8 +15,7 @@ provider:
     OPENAI_API_KEY: ${env:OPENAI_API_KEY}
     DB_URL: ${env:DB_URL}
     S3_BUCKET: ${env:S3_BUCKET}
-    THUMBNAIL_BUCKET: ${env.THUMBNAIL_BUCKET}
-    THUMBNAIL_DOMAIN: ${env.THUMBNAIL_DOMAIN}
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -26,8 +25,6 @@ provider:
         - "ec2:DeleteNetworkInterface"
       Resource: "*"
   logRetentionInDays: 14
-  layers:
-    - arn:aws:lambda:ap-northeast-2:518272060765:layer:canvas-nodejs:1
 
 functions:
   remak-embedding:
