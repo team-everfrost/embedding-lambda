@@ -28,17 +28,12 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      - name: Cache apt packages
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm install --omit=dev --ignore-scripts
 
       - name: install serverless plugin
-        run: serverless plugin install -n serverless-dotenv-plugin && serverless plugin install -n serverless-lift && serverless plugin install -n serverless-plugin-typescript && serverless plugin install -n serverless-prune-plugin
+        run: npm i -D serverless-dotenv-plugin serverless-lift serverless-plugin-typescript serverless-prune-plugin
 
       - name: Delete unused pdfjs files
         run: rm -rf node_modules/pdfjs-dist/build/*
