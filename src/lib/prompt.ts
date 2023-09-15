@@ -60,7 +60,7 @@ export class Prompt {
               description: 'A list of hashtags for the article',
             },
           },
-          required: ['shortSummary', 'summary', 'hashtags'],
+          required: ['oneLineSummary', 'summary', 'hashtags'],
         },
       },
     ];
