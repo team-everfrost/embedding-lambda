@@ -10,24 +10,24 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
-    "openai": "^3.3.0",
+    "openai": "^4.7.0",
     "pdf-parse": "^1.1.1",
     "serverless-postgres": "^2.1.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "^3.388.0",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
-    "@typescript-eslint/parser": "^6.3.0",
+    "@aws-sdk/client-s3": "^3.413.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
     "commitlint-config-git-commit-emoji": "^1.0.0",
-    "eslint": "^8.47.0",
+    "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
-    "prettier": "^3.0.1",
+    "prettier": "^3.0.3",
     "serverless-dotenv-plugin": "^6.0.0",
-    "serverless-lift": "^1.1.2",
+    "serverless-lift": "^1.27.0",
     "serverless-plugin-typescript": "^2.1.5",
     "serverless-prune-plugin": "^2.0.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   }
 }
