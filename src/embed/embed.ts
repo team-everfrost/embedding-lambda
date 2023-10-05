@@ -3,6 +3,7 @@ import { DocType, EmbeddedText, ParsedContent } from '../types';
 
 const chunkSize = 1024;
 const chunkOverlap = 100;
+const maxNumOfChunks = 100;
 
 export const createEmbeds = async (
   docId: string,
@@ -16,7 +17,11 @@ export const createEmbeds = async (
     const numOfChunks = Math.ceil(content.length / (chunkSize - chunkOverlap));
 
     let lineNumber = 1;
-    for (let index = 0; index < numOfChunks; index++) {
+    for (
+      let index = 0;
+      index < Math.min(numOfChunks, maxNumOfChunks);
+      index++
+    ) {
       const start = index * (chunkSize - chunkOverlap);
       const end = start + chunkSize;
       const chunk = content.slice(start, end);
