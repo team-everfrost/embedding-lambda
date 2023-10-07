@@ -15,6 +15,8 @@ provider:
     OPENAI_API_KEY: ${env:OPENAI_API_KEY}
     DB_URL: ${env:DB_URL}
     S3_BUCKET: ${env:S3_BUCKET}
+    OPENSEARCH_NODE: ${env:OPENSEARCH_NODE}
+    OPENSEARCH_INDEX: ${env:OPENSEARCH_INDEX}
 
   iamRoleStatements:
     - Effect: Allow
