@@ -5,12 +5,14 @@ import {
   changeHashtags,
   changeSummary,
   client,
-  deleteEmbeds,
   findDoc,
   findUid,
-  insertEmbeds,
 } from './lib/db';
 import { getSummary } from './lib/openai';
+import {
+  deleteEmbeddedTextsFromSearchEngine,
+  insertEmbeddedTextsToSearchEngine,
+} from './lib/opensearch';
 import { parse } from './parser';
 import { Status } from './types';
 
@@ -68,24 +70,29 @@ export const handler = async (event) => {
 
       const summary = results[0];
 
-      // 기존 임베딩 삭제
-      await deleteEmbeds(documentId);
+      // 검색 엔진에 존재하는 기존 임베딩 삭제
+      await deleteEmbeddedTextsFromSearchEngine(documentId);
 
-      const summaryEmbedPromise = createEmbeds(
+      const metadataEmbeddedTexts = await createEmbeds(
         documentId,
         doc.user_id,
         doc.type,
-        [{ chapter: 'summary', page: 1, content: summary }],
-      ).then(insertEmbeds);
+        [{ chapter: 'metadata', page: 1, content: doc.title + '\n' + summary }],
+      );
 
-      const embeddedTextsPromise = createEmbeds(
+      const parsedContentEmbeddedTexts = await createEmbeds(
         documentId,
         doc.user_id,
         doc.type,
         parsedContent,
-      ).then(insertEmbeds);
+      );
 
-      await Promise.all([summaryEmbedPromise, embeddedTextsPromise]);
+      const allEmbeddedTexts = metadataEmbeddedTexts.concat(
+        parsedContentEmbeddedTexts,
+      );
+
+      // 검색 엔진에 임베딩 저장
+      await insertEmbeddedTextsToSearchEngine(allEmbeddedTexts);
     } catch (e) {
       await changeDocStatus(documentId, Status.EMBED_REJECTED);
       throw e; // 명시적으로 에러를 던져서 DLQ로 이동
