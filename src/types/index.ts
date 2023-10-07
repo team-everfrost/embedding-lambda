@@ -37,6 +37,14 @@ export interface EmbeddedText {
   vector: number[];
 }
 
+export interface SearchIndex {
+  document_id: string;
+  user_id: string;
+  document_type: DocType;
+  content: string;
+  vector: number[];
+}
+
 export interface ParsedContent {
   chapter: string;
   page: number;
