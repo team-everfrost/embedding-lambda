@@ -38,7 +38,7 @@ export const insertEmbeddedTextsToSearchEngine = async (
     convertToSearchIndex(embeddedText),
   ]);
 
-  console.log(body);
+  // console.log(body);
 
   await client.bulk({ body });
 };
@@ -57,5 +57,5 @@ export const deleteEmbeddedTextsFromSearchEngine = async (
     },
   });
 
-  console.log(`Deleted document ${documentId} from OpenSearch`);
+  // console.log(`Deleted document ${documentId} from OpenSearch`);
 };
