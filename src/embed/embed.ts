@@ -9,11 +9,11 @@ export const createEmbeds = async (
   docId: string,
   userId: string,
   type: DocType,
-  parsedContent: ParsedContent[],
+  parsedContents: ParsedContent[],
 ): Promise<EmbeddedText[]> => {
   const embeddedTexts: EmbeddedText[] = [];
 
-  for (const { chapter, page, content } of parsedContent) {
+  for (const { chapter, page, content } of parsedContents) {
     const numOfChunks = Math.ceil(content.length / (chunkSize - chunkOverlap));
 
     let lineNumber = 1;
