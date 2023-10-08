@@ -58,6 +58,7 @@ export const getSummary = async (title: string, content: string) => {
       },
     });
 
+    // TODO: JSON에 double quote가 들어가면 오류가 발생함.
     const result: { oneLineSummary: string; summary: string; hashtags: [] } =
       JSON.parse(completion.choices[0].message.function_call.arguments);
 
