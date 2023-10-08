@@ -25,24 +25,35 @@ export enum DocType {
 }
 
 export interface EmbeddedText {
-  documentId: string;
-  userId: string;
-  type: DocType;
   chapter: string; // 챕터명, 소제목, ...
-  startPageNumber: number; // Memo와 웹페이지는 1로 고정
-  startLineNumber: number;
-  endPageNumber: number;
-  endLineNumber: number;
+
+  page: number; // 페이지 번호
+  index: number; // 해당 페이지의 몇 번째 chunk인지
   content: string;
   vector: number[];
+
+  userId: string;
+  documentId: string;
+  type: DocType;
 }
 
-export interface SearchIndex {
-  document_id: string;
-  user_id: string;
-  document_type: DocType;
+export interface DocumentIndex {
+  title: string;
   content: string;
+
+  user_id: string;
+  document_id: string;
+  document_type: DocType;
+}
+
+export interface EmbeddingIndex {
   vector: number[];
+  page: number;
+  index: number;
+
+  user_id: string;
+  document_id: string;
+  document_type: DocType;
 }
 
 export interface ParsedContent {

@@ -43,4 +43,5 @@ jobs:
           DB_URL: ${{ secrets.DB_URL_DEV }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           OPENSEARCH_NODE: ${{ secrets.OPENSEARCH_NODE }}
-          OPENSEARCH_INDEX: ${{ secrets.OPENSEARCH_INDEX }}
+          OPENSEARCH_DOCUMENT_INDEX: ${{ secrets.OPENSEARCH_DOCUMENT_INDEX }}
+          OPENSEARCH_EMBEDDING_INDEX: ${{ secrets.OPENSEARCH_EMBEDDING_INDEX }}

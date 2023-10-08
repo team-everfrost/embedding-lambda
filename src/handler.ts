@@ -11,6 +11,7 @@ import {
 import { getSummary } from './lib/openai';
 import {
   deleteEmbeddedTextsFromSearchEngine,
+  insertDocumentToSearchEngine,
   insertEmbeddedTextsToSearchEngine,
 } from './lib/opensearch';
 import { parse } from './parser';
@@ -91,8 +92,13 @@ export const handler = async (event) => {
         parsedContentEmbeddedTexts,
       );
 
-      // 검색 엔진에 임베딩 저장
-      await insertEmbeddedTextsToSearchEngine(allEmbeddedTexts);
+      Promise.all([
+        // 검색 엔진에 문서 추가
+        // HTML 태그 제거된 content 삽입
+        insertDocumentToSearchEngine(doc, content),
+        // 검색 엔진에 임베딩 추가
+        insertEmbeddedTextsToSearchEngine(allEmbeddedTexts),
+      ]);
     } catch (e) {
       await changeDocStatus(documentId, Status.EMBED_REJECTED);
       throw e; // 명시적으로 에러를 던져서 DLQ로 이동
