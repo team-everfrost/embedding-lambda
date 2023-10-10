@@ -1,4 +1,5 @@
 import { Doc, ParsedContent } from '../types';
+import { parseImage } from './image';
 import { parseMemo } from './memo';
 import { parsePdf } from './pdf';
 import { parseTxt } from './txt';
@@ -7,6 +8,7 @@ import { parseWebpage } from './webpage';
 // 확장자: 파서 매핑
 const fileParser = {
   txt: parseTxt,
+  log: parseTxt,
   pdf: parsePdf,
 };
 
@@ -17,7 +19,8 @@ export const parse = async (
 
   if (doc.type === 'MEMO') return await parseMemo(doc);
   if (doc.type === 'WEBPAGE') return await parseWebpage(doc);
-  if (doc.type === 'IMAGE' || doc.type === 'FILE') {
+  if (doc.type === 'IMAGE') return await parseImage(doc);
+  if (doc.type === 'FILE') {
     const fileExtension = doc.title.split('.').pop().toLowerCase();
     if (!(fileExtension in fileParser))
       throw new Error('Not supported file type: ' + fileExtension);
