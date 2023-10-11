@@ -39,6 +39,10 @@ export const handler = async (event) => {
     )
       continue;
 
+    console.log('doc uuid: ' + doc.uid);
+    console.log('doc type: ' + doc.type);
+    console.log('before status: ' + doc.status);
+
     // 해당 Doc의 상태를 처리중으로 변경
     await changeDocStatus(documentId, Status.EMBED_PROCESSING);
 

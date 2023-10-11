@@ -7,7 +7,10 @@ export const parseImage = async (doc: Doc) => {
 
   const { caption, text } = await getOcrResult(fileUrl);
 
-  const content = text ?? caption ?? '';
+  console.log('caption: ' + caption.substring(0, 50));
+  console.log('text: ' + text.substring(0, 50));
+
+  const content = text || caption;
 
   const parsedContent: ParsedContent[] = [];
   parsedContent.push({
