@@ -5,7 +5,10 @@ import { Doc, ParsedContent } from '../types';
 export const parseImage = async (doc: Doc) => {
   const fileUrl = await getFileSignedUrl(doc.doc_id);
 
-  const content = await getOcrResult(fileUrl);
+  const { caption, text } = await getOcrResult(fileUrl);
+
+  const content = text ?? caption ?? '';
+
   const parsedContent: ParsedContent[] = [];
   parsedContent.push({
     chapter: doc.title.substring(0, doc.title.lastIndexOf('.')),

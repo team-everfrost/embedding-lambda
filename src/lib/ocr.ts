@@ -4,7 +4,7 @@ const AZURE_OCR_ENDPOINT = process.env.AZURE_OCR_ENDPOINT;
 const AZURE_OCR_KEY = process.env.AZURE_OCR_KEY;
 
 export const getOcrResult = async (imageUrl: string) => {
-  const url = `${AZURE_OCR_ENDPOINT}/computervision/imageanalysis:analyze?features=read&api-version=2023-04-01-preview`;
+  const url = `${AZURE_OCR_ENDPOINT}/computervision/imageanalysis:analyze?features=caption,read&model-version=latest&api-version=2023-04-01-preview`;
   const headers = {
     'Content-Type': 'application/json',
     'Ocp-Apim-Subscription-Key': AZURE_OCR_KEY,
@@ -14,9 +14,10 @@ export const getOcrResult = async (imageUrl: string) => {
   };
 
   const response = await fetchWithRetry(url, body, headers);
-  const text = response.data.readResult.content;
+  const caption = response.data?.captionResult?.text ?? '';
+  const text = response.data?.readResult?.content ?? '';
 
-  return text;
+  return { caption, text };
 };
 
 export const fetchWithRetry = async (

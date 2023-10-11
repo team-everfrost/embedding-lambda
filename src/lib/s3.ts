@@ -27,6 +27,7 @@ export const readFile = async (key: string) => {
   return byteArray;
 };
 
+//Deprecated, 사용시 수정 필요
 export const writeThumbnail = async (
   uid: string,
   key: string,
