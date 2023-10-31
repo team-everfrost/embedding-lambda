@@ -47,7 +47,7 @@ export const getSummary = async (
 
   try {
     const model = 'gpt-3.5-turbo';
-    const language = 'Korean'; // TODO: 사용자가 입력할 수 있도록 변경
+    const language = '한국어'; // TODO: 사용자가 입력할 수 있도록 변경
     const prompt: Prompt = new Prompt(language, 0, title, type, inputContent);
     const completion = await openai.chat.completions.create({
       model: model,
