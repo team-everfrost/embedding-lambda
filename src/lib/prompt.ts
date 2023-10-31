@@ -44,18 +44,18 @@ export class Prompt {
           properties: {
             oneLineSummary: {
               type: 'string',
-              description: `a concise summary of the entire ${this.type} within one sentence`,
+              description: `a concise summary of the entire ${this.type} within one sentence, using ${this.language}`,
             },
             summary: {
               type: 'string',
-              description: `concise, one-paragraph or less summary of the entire ${this.type}`,
+              description: `concise, one-paragraph or less summary of the entire ${this.type}, using ${this.language}`,
             },
             hashtags: {
               type: 'array',
               items: {
                 type: 'string',
               },
-              description: `A list of hashtags for the ${this.type}`,
+              description: `A list of hashtags for the ${this.type}, using ${this.language} or English proper nouns and abbreviations`,
             },
           },
           required: ['oneLineSummary', 'summary', 'hashtags'],
