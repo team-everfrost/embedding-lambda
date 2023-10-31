@@ -26,7 +26,11 @@ export const getEmbedding = async (text: string) => {
   }
 };
 
-export const getSummary = async (title: string, content: string) => {
+export const getSummary = async (
+  title: string,
+  type: string,
+  content: string,
+) => {
   // content 길이가 3000자 이상이면 앞 1000자, 중간 1000자, 뒤 1000자를 합쳐서 요약
   const length = content.length;
   let inputContent: string;
@@ -44,7 +48,7 @@ export const getSummary = async (title: string, content: string) => {
   try {
     const model = 'gpt-3.5-turbo';
     const language = 'Korean'; // TODO: 사용자가 입력할 수 있도록 변경
-    const prompt: Prompt = new Prompt(language, 0, title, inputContent);
+    const prompt: Prompt = new Prompt(language, 0, title, type, inputContent);
     const completion = await openai.chat.completions.create({
       model: model,
       messages: [

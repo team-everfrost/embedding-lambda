@@ -6,7 +6,7 @@ const chunkOverlap = 100;
 const maxNumOfChunks = 100;
 
 export const createEmbeds = async (
-  docId: string,
+  docId: number,
   userId: string,
   type: DocType,
   parsedContents: ParsedContent[],

@@ -33,7 +33,7 @@ export interface EmbeddedText {
   vector: number[];
 
   userId: string;
-  documentId: string;
+  documentId: number;
   type: DocType;
 }
 

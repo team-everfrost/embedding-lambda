@@ -5,23 +5,25 @@ export class Prompt {
   functions: any[];
 
   title: string; // 문서 제목
+  type: string; // 문서 타입 (MEMO, WEBPAGE, IMAGE, FILE)
   content: string; // 문서 내용 (최대 3000자)
-  input: string; // 제목과 내용을 합친 것
+  input: string; // 웹페이지의 경우 제목 + 내용, 이외의 경우 내용
 
   constructor(
     language: string,
     temperature: number,
     title: string,
+    type: string,
     content: string,
   ) {
     this.language = language;
     this.temperature = temperature;
     this.prompt = `You are a helpful AI assistant for a busy journalist.
-        The journalist has asked you to write a summary and extract hashtags of the following article.
+        The journalist has asked you to write a summary and extract hashtags of the following ${this.type}.
         ---
         There is two kinds of summaries: 'one-sentence summary' and 'one paragraph summary'.
         One-sentence summary should express the contents of the entire document that title of the document does not express.
-        One paragraph summary should enable user to grasp all the core contents of the article without having to read the entire article.
+        One paragraph summary should enable user to grasp all the core contents of the ${this.type} without having to read the entire article.
         Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
         Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.
         Rely strictly on the provided text, without including external information.
@@ -30,34 +32,30 @@ export class Prompt {
         Hashtag should be words that can be used to classify multiple documents.
         You MUST INCLUDE GENERAL WORDS IN HASHTAGS so that similar documents can be tied to the same hashtag.
         ---
-        You MUST use specified language for the summary and hashtag.
-        Language: ${this.language}
+        You MUST use ${this.language} for the summary and hashtag.
         ---
-        Article:
         `;
     this.functions = [
       {
         name: 'insertMetadata',
-        description: 'Inserts summary and hashtags into the article metadata',
+        description: `Inserts summary and hashtags into the ${this.type} metadata`,
         parameters: {
           type: 'object',
           properties: {
             oneLineSummary: {
               type: 'string',
-              description:
-                'a concise summary of the entire document within one sentence',
+              description: `a concise summary of the entire ${this.type} within one sentence`,
             },
             summary: {
               type: 'string',
-              description:
-                'concise, one-paragraph or less summary of the entire document',
+              description: `concise, one-paragraph or less summary of the entire ${this.type}`,
             },
             hashtags: {
               type: 'array',
               items: {
                 type: 'string',
               },
-              description: 'A list of hashtags for the article',
+              description: `A list of hashtags for the ${this.type}`,
             },
           },
           required: ['oneLineSummary', 'summary', 'hashtags'],
@@ -65,8 +63,25 @@ export class Prompt {
       },
     ];
     this.title = title;
+    this.type = type;
     this.content = content;
-    this.input = `Title: ${this.title}
-        Content: ${this.content}`;
+    this.input = getInput(title, type, content);
   }
 }
+
+const getInput = (title: string, type: string, content: string) => {
+  if (type === 'WEBPAGE') {
+    return `Title: ${title}
+    Content: ${content}`;
+  }
+  if (type === 'IMAGE') {
+    return `OCR Text: ${content}`;
+  }
+
+  if (type === 'FILE') {
+    return `Filename: ${title}
+    Content: ${content}`;
+  }
+
+  return `Content: ${content}`;
+};

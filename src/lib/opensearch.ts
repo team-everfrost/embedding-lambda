@@ -26,7 +26,7 @@ export const convertEmbeddedTextToIndex = (
     vector: embeddedText.vector,
     page: embeddedText.page,
     index: embeddedText.index,
-    document_id: embeddedText.documentId,
+    document_id: embeddedText.documentId.toString(),
     user_id: embeddedText.userId,
     document_type: embeddedText.type,
   };
