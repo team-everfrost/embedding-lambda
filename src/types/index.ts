@@ -40,6 +40,7 @@ export interface EmbeddedText {
 export interface DocumentIndex {
   title: string;
   content: string;
+  summary: string;
 
   user_id: string;
   document_id: string;

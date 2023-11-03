@@ -35,10 +35,12 @@ export const convertEmbeddedTextToIndex = (
 export const convertDocumentToIndex = (
   document: Doc,
   content: string,
+  summary: string,
 ): DocumentIndex => {
   return {
     title: document.title,
     content: content,
+    summary: summary,
     user_id: document.user_id,
     document_id: document.id.toString(),
     document_type: document.type,
@@ -65,11 +67,12 @@ export const insertEmbeddedTextsToSearchEngine = async (
 export const insertDocumentToSearchEngine = async (
   document: Doc,
   content: string,
+  summary: string,
 ) => {
   try {
     await client.index({
       index: documentIndex,
-      body: convertDocumentToIndex(document, content),
+      body: convertDocumentToIndex(document, content, summary),
     });
   } catch (e) {
     console.error(e);

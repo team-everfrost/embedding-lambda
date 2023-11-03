@@ -16,7 +16,7 @@ import {
 } from './lib/opensearch';
 import { promiseTimeout } from './lib/timeout';
 import { parse } from './parser';
-import { Status } from './types';
+import { Doc, Status } from './types';
 
 export const handler = async (event, context) => {
   await client.connect();
@@ -81,23 +81,26 @@ const job = async (doc: any, documentId: number) => {
   // 검색 엔진에 존재하는 기존 임베딩 삭제
   await deleteEmbeddedTextsFromSearchEngine(documentId);
 
-  const allEmbeddedTexts = await Promise.all([
+  const [summaryData, embeddedTexts] = await Promise.all([
     summaryPromise,
     embeddingPromise,
-  ]).then((values) => {
-    return values.flat();
-  });
+  ]);
+
+  const allEmbeddedTexts = [
+    ...summaryData.metadataEmbeddedTexts,
+    ...embeddedTexts,
+  ];
 
   await Promise.all([
     // 검색 엔진에 문서 추가
     // HTML 태그 제거된 content 삽입
-    insertDocumentToSearchEngine(doc, content),
+    insertDocumentToSearchEngine(doc, content, summaryData.summary),
     // 검색 엔진에 임베딩 추가
     insertEmbeddedTextsToSearchEngine(allEmbeddedTexts),
   ]);
 };
 
-const summaryJob = async (doc: any, documentId: number, content: string) => {
+const summaryJob = async (doc: Doc, documentId: number, content: string) => {
   // 요약, 태그 생성
   const summary = await getSummary(doc.title, doc.type, content).then(
     async ({ summary, hashtags }) => {
@@ -120,11 +123,14 @@ const summaryJob = async (doc: any, documentId: number, content: string) => {
     [{ chapter: 'metadata', page: 1, content: metaContent }],
   );
 
-  return metadataEmbeddedTexts;
+  return {
+    summary,
+    metadataEmbeddedTexts,
+  };
 };
 
 const embeddingJob = async (
-  doc: any,
+  doc: Doc,
   documentId: number,
   parsedContent: any[],
 ) => {
