@@ -54,6 +54,7 @@ export const handler = async (event, context) => {
         job(doc, documentId),
       );
     } catch (e) {
+      console.log('embedding failed');
       await changeDocStatus(documentId, Status.EMBED_REJECTED);
       throw e; // 명시적으로 에러를 던져서 DLQ로 이동
     }
@@ -75,43 +76,51 @@ const job = async (doc: any, documentId: number) => {
     await changeContent(documentId, content);
   }
 
-  const summaryPromise = summaryJob(doc, documentId, content);
-  const embeddingPromise = embeddingJob(doc, documentId, parsedContent);
+  try {
+    const summaryPromise = summaryJob(doc, documentId, content);
+    const embeddingPromise = embeddingJob(doc, documentId, parsedContent);
 
-  // 검색 엔진에 존재하는 기존 임베딩 삭제
-  await deleteEmbeddedTextsFromSearchEngine(documentId);
+    // 검색 엔진에 존재하는 기존 임베딩 삭제
+    await deleteEmbeddedTextsFromSearchEngine(documentId);
 
-  const [summaryData, embeddedTexts] = await Promise.all([
-    summaryPromise,
-    embeddingPromise,
-  ]);
+    const [summaryData, embeddedTexts] = await Promise.all([
+      summaryPromise,
+      embeddingPromise,
+    ]);
 
-  const allEmbeddedTexts = [
-    ...summaryData.metadataEmbeddedTexts,
-    ...embeddedTexts,
-  ];
+    const allEmbeddedTexts = [
+      ...summaryData.metadataEmbeddedTexts,
+      ...embeddedTexts,
+    ];
 
-  await Promise.all([
-    // 검색 엔진에 문서 추가
-    // HTML 태그 제거된 content 삽입
-    insertDocumentToSearchEngine(doc, content, summaryData.summary),
-    // 검색 엔진에 임베딩 추가
-    insertEmbeddedTextsToSearchEngine(allEmbeddedTexts),
-  ]);
+    await Promise.all([
+      // 검색 엔진에 문서 추가
+      // HTML 태그 제거된 content 삽입
+      insertDocumentToSearchEngine(doc, content, summaryData.summary),
+      // 검색 엔진에 임베딩 추가
+      insertEmbeddedTextsToSearchEngine(allEmbeddedTexts),
+    ]);
+  } catch (e) {
+    console.error('job failed');
+    throw e;
+  }
 };
 
 const summaryJob = async (doc: Doc, documentId: number, content: string) => {
   // 요약, 태그 생성
-  const summary = await getSummary(doc.title, doc.type, content).then(
-    async ({ summary, hashtags }) => {
+  const summary = await getSummary(doc.title, doc.type, content)
+    .then(async ({ summary, hashtags }) => {
       await Promise.all([
         // DB에 저장
         changeSummary(documentId, summary),
         changeHashtags(documentId, doc.user_id, hashtags),
       ]);
       return summary;
-    },
-  );
+    })
+    .catch((e) => {
+      console.error('summaryJob failed');
+      throw e;
+    });
 
   const metaContent =
     doc.type === 'WEBPAGE' ? doc.title + '\n' + summary : summary;

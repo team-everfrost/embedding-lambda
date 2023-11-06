@@ -1,3 +1,4 @@
+import { isWithinTokenLimit } from 'gpt-tokenizer';
 import OpenAI from 'openai';
 import { Prompt } from './prompt';
 
@@ -31,19 +32,8 @@ export const getSummary = async (
   type: string,
   content: string,
 ) => {
-  // content 길이가 3000자 이상이면 앞 1000자, 중간 1000자, 뒤 1000자를 합쳐서 요약
-  const length = content.length;
-  let inputContent: string;
-  if (length > 3000) {
-    inputContent =
-      content.slice(0, 1000) +
-      '\n\n...\n\n' +
-      content.slice(length / 2 - 500, length / 2 + 500) +
-      '\n\n...\n\n' +
-      content.slice(length - 1000, length);
-  } else {
-    inputContent = content;
-  }
+  // content가 token 3천토큰 제한을 넘기지 않도록 함
+  const inputContent = getSlice(content);
 
   try {
     const model = 'gpt-3.5-turbo';
@@ -84,4 +74,33 @@ export const getSummary = async (
 
     throw e;
   }
+};
+
+const getSlice = (content: string): string => {
+  // content가 3000토큰을 넘기지 않도록 함
+
+  const length = content.length;
+  let inputContent = content;
+  let withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+  if (withinTokenLimit) return inputContent;
+
+  inputContent =
+    content.slice(0, 1000) +
+    '\n\n...\n\n' +
+    content.slice(length / 2 - 500, length / 2 + 500) +
+    '\n\n...\n\n' +
+    content.slice(length - 1000, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+  if (withinTokenLimit) return inputContent;
+
+  inputContent =
+    content.slice(0, 1000) +
+    '\n\n...\n\n' +
+    content.slice(length - 1000, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+  if (withinTokenLimit) return inputContent;
+
+  inputContent =
+    content.slice(0, 500) + '\n\n...\n\n' + content.slice(length - 500, length);
+  return inputContent;
 };
