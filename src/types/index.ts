@@ -48,6 +48,8 @@ export interface DocumentIndex {
 }
 
 export interface EmbeddingIndex {
+  chapter: string; // 잘린 문서의 제목
+  content: string; // 잘린 문서 내용
   vector: number[];
   page: number;
   index: number;

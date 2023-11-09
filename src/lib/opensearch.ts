@@ -23,6 +23,8 @@ export const convertEmbeddedTextToIndex = (
   embeddedText: EmbeddedText,
 ): EmbeddingIndex => {
   return {
+    chapter: embeddedText.chapter,
+    content: embeddedText.content,
     vector: embeddedText.vector,
     page: embeddedText.page,
     index: embeddedText.index,
