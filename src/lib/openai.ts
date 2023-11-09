@@ -6,12 +6,15 @@ const config = {
   apiKey: process.env.OPENAI_API_KEY,
 };
 
+const GPT_MODEL = 'gpt-3.5-turbo-1106';
+const EMBEDDING_MDODEL = 'text-embedding-ada-002';
+
 const openai = new OpenAI(config);
 
 export const getEmbedding = async (text: string) => {
   try {
     const result = await openai.embeddings.create({
-      model: 'text-embedding-ada-002',
+      model: EMBEDDING_MDODEL,
       input: text,
     });
     return result.data[0].embedding;
@@ -36,7 +39,7 @@ export const getSummary = async (
   const inputContent = getSlice(content);
 
   try {
-    const model = 'gpt-3.5-turbo';
+    const model = GPT_MODEL;
     const language = 'Korean'; // TODO: 사용자가 입력할 수 있도록 변경
     const prompt: Prompt = new Prompt(language, 0, title, type, inputContent);
     const completion = await openai.chat.completions.create({
