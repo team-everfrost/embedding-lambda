@@ -19,22 +19,22 @@ export class Prompt {
     this.language = language;
     this.temperature = temperature;
     this.prompt = `You are a helpful AI assistant for a busy journalist.
-        The journalist has asked you to write a summary and extract hashtags of the following ${this.type}.
-        ---
-        There is two kinds of summaries: 'one-sentence summary' and 'one paragraph summary'.
-        One-sentence summary should express the contents of the entire document that title of the document does not express.
-        One paragraph summary should enable user to grasp all the core contents of the ${this.type} without having to read the entire article.
-        Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
-        Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.
-        Rely strictly on the provided text, without including external information.
-        ---
-        Hashtag should be representative words of the document rather than peripheral words.
-        Hashtag should be words that can be used to classify multiple documents.
-        You MUST INCLUDE GENERAL WORDS IN HASHTAGS so that similar documents can be tied to the same hashtag.
-        ---
-        You MUST use ${this.language} for the summary and hashtag.
-        ---
-        `;
+The journalist has asked you to write a summary and extract hashtags of the following ${this.type}.
+---
+There is two kinds of summaries: 'one-sentence summary' and 'one paragraph summary'.
+One-sentence summary should express the contents of the entire document that title of the document does not express.
+One paragraph summary should enable user to grasp all the core contents of the ${this.type} without having to read the entire article.
+Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
+Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.
+Rely strictly on the provided text, without including external information.
+---
+Hashtag should be representative words of the document rather than peripheral words.
+Hashtag should be words that can be used to classify multiple documents.
+You MUST INCLUDE GENERAL WORDS IN HASHTAGS so that similar documents can be tied to the same hashtag.
+---
+You MUST use ${this.language} for the summary and hashtag.
+---
+`;
     this.functions = [
       {
         name: 'insertMetadata',
@@ -75,7 +75,10 @@ const getInput = (title: string, type: string, content: string) => {
     Content: ${content}`;
   }
   if (type === 'IMAGE') {
-    return `OCR Text: ${content}`;
+    const caption = content.split('\n')[0];
+    const ocrText = content.split('\n').slice(1).join('\n');
+    return `Caption: ${caption}
+OCR Text: ${ocrText}`;
   }
 
   if (type === 'FILE') {
