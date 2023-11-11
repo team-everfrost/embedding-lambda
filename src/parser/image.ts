@@ -10,7 +10,7 @@ export const parseImage = async (doc: Doc) => {
   console.log('caption: ' + caption.substring(0, 50));
   console.log('text: ' + text.substring(0, 50));
 
-  const content = text || caption;
+  const content = caption + '\n' + text;
 
   const parsedContent: ParsedContent[] = [];
   parsedContent.push({
