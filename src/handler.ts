@@ -76,6 +76,13 @@ const job = async (doc: any, documentId: number) => {
     await changeContent(documentId, content);
   }
 
+  // 메모는 요약, 태그 생성, 임베딩 없이 검색 엔진에 문서 추가만 진행
+  // TODO: 메모 길이에 따라 가변적으로 요약, 태그 생성, 임베딩 추가되도록 변경
+  if (doc.type === 'MEMO') {
+    await insertDocumentToSearchEngine(doc, content, '');
+    return;
+  }
+
   try {
     const summaryPromise = summaryJob(doc, documentId, content);
     const embeddingPromise = embeddingJob(doc, documentId, parsedContent);
