@@ -6,7 +6,6 @@ const config = {
   apiKey: process.env.OPENAI_API_KEY,
 };
 
-// TODO: 1106에서 function call deprecated돼서 되돌림. 추후 tools + gpt-3.5-turbo-1106으로 변경
 const GPT_MODEL = 'gpt-3.5-turbo';
 const EMBEDDING_MDODEL = 'text-embedding-ada-002';
 
@@ -37,6 +36,7 @@ export const getSummary = async (
   content: string,
 ) => {
   // content가 token 3천토큰 제한을 넘기지 않도록 함
+  // TODO: 모델 바뀌면 제한 널널하게 변경
   const inputContent = getSlice(content);
 
   try {
@@ -54,6 +54,7 @@ export const getSummary = async (
         },
       ],
       temperature: 0,
+      // TODO: tools로 변경
       functions: prompt.functions,
       function_call: {
         name: 'insertMetadata',
@@ -84,27 +85,27 @@ export const getSummary = async (
 };
 
 const getSlice = (content: string): string => {
-  // content가 5000토큰을 넘기지 않도록 함
+  // content가 3000토큰을 넘기지 않도록 함
 
   const length = content.length;
   let inputContent = content;
-  let withinTokenLimit = isWithinTokenLimit(inputContent, 5000);
+  let withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
-    content.slice(0, 2000) +
+    content.slice(0, 1000) +
     '\n\n...\n\n' +
     content.slice(length / 2 - 500, length / 2 + 500) +
     '\n\n...\n\n' +
-    content.slice(length - 2000, length);
-  withinTokenLimit = isWithinTokenLimit(inputContent, 5000);
+    content.slice(length - 1000, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
-    content.slice(0, 2000) +
+    content.slice(0, 1000) +
     '\n\n...\n\n' +
-    content.slice(length - 2000, length);
-  withinTokenLimit = isWithinTokenLimit(inputContent, 5000);
+    content.slice(length - 1000, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
