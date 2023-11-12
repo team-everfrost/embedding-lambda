@@ -63,6 +63,9 @@ export const getSummary = async (
     const result: { oneLineSummary: string; summary: string; hashtags: [] } =
       JSON.parse(completion.choices[0].message.function_call.arguments);
 
+    // onelineSummary에서 엔터 제거
+    result.oneLineSummary = result.oneLineSummary.replace(/\n/g, '');
+
     return {
       summary: result.oneLineSummary + '\n' + result.summary,
       hashtags: result.hashtags,
@@ -80,27 +83,27 @@ export const getSummary = async (
 };
 
 const getSlice = (content: string): string => {
-  // content가 3000토큰을 넘기지 않도록 함
+  // content가 5000토큰을 넘기지 않도록 함
 
   const length = content.length;
   let inputContent = content;
-  let withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+  let withinTokenLimit = isWithinTokenLimit(inputContent, 5000);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
-    content.slice(0, 1000) +
+    content.slice(0, 2000) +
     '\n\n...\n\n' +
     content.slice(length / 2 - 500, length / 2 + 500) +
     '\n\n...\n\n' +
-    content.slice(length - 1000, length);
-  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+    content.slice(length - 2000, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, 5000);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
-    content.slice(0, 1000) +
+    content.slice(0, 2000) +
     '\n\n...\n\n' +
-    content.slice(length - 1000, length);
-  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+    content.slice(length - 2000, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, 5000);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
