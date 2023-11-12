@@ -6,7 +6,8 @@ const config = {
   apiKey: process.env.OPENAI_API_KEY,
 };
 
-const GPT_MODEL = 'gpt-3.5-turbo-1106';
+// TODO: 1106에서 function call deprecated돼서 되돌림. 추후 tools + gpt-3.5-turbo-1106으로 변경
+const GPT_MODEL = 'gpt-3.5-turbo';
 const EMBEDDING_MDODEL = 'text-embedding-ada-002';
 
 const openai = new OpenAI(config);
