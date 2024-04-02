@@ -16,6 +16,7 @@ export const createEmbeds = async (
   for (const { chapter, page, content } of parsedContents) {
     const numOfChunks = Math.ceil(content.length / (chunkSize - chunkOverlap));
 
+    let lineNumber = 1;
     for (
       let index = 0;
       index < Math.min(numOfChunks, maxNumOfChunks);
@@ -26,13 +27,22 @@ export const createEmbeds = async (
       const chunk = content.slice(start, end);
       const vector = await getEmbedding(chunk);
 
+      // Calculate line numbers
+      const startLineNumber = lineNumber;
+      const endLineNumber = lineNumber + chunk.split('\n').length - 1;
+
+      // Update line number for the next chunk
+      lineNumber = endLineNumber + 1;
+
       embeddedTexts.push({
         documentId: docId,
         userId,
         type,
         chapter,
-        page,
-        index,
+        startPageNumber: page,
+        endPageNumber: page,
+        startLineNumber,
+        endLineNumber,
         content: chunk,
         vector,
       });

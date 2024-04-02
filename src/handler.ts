@@ -5,15 +5,12 @@ import {
   changeHashtags,
   changeSummary,
   client,
+  deleteEmbeds,
   findDoc,
   findUid,
+  insertEmbeds,
 } from './lib/db';
 import { getSummary } from './lib/openai';
-import {
-  deleteEmbeddedTextsFromSearchEngine,
-  insertDocumentToSearchEngine,
-  insertEmbeddedTextsToSearchEngine,
-} from './lib/opensearch';
 import { promiseTimeout } from './lib/timeout';
 import { parse } from './parser';
 import { Doc, Status } from './types';
@@ -76,37 +73,19 @@ const job = async (doc: any, documentId: number) => {
     await changeContent(documentId, content);
   }
 
-  // 메모는 요약, 태그 생성, 임베딩 없이 검색 엔진에 문서 추가만 진행
-  // TODO: 메모 길이에 따라 가변적으로 요약, 태그 생성, 임베딩 추가되도록 변경
+  // 메모는 임베딩 처리하지 않음
   if (doc.type === 'MEMO') {
-    await insertDocumentToSearchEngine(doc, content, '');
     return;
   }
 
   try {
+    // DB에 존재하는 기존 임베딩 삭제
+    await deleteEmbeds(documentId);
+
     const summaryPromise = summaryJob(doc, documentId, content);
     const embeddingPromise = embeddingJob(doc, documentId, parsedContent);
 
-    // 검색 엔진에 존재하는 기존 임베딩 삭제
-    await deleteEmbeddedTextsFromSearchEngine(documentId);
-
-    const [summaryData, embeddedTexts] = await Promise.all([
-      summaryPromise,
-      embeddingPromise,
-    ]);
-
-    const allEmbeddedTexts = [
-      ...summaryData.metadataEmbeddedTexts,
-      ...embeddedTexts,
-    ];
-
-    await Promise.all([
-      // 검색 엔진에 문서 추가
-      // HTML 태그 제거된 content 삽입
-      insertDocumentToSearchEngine(doc, content, summaryData.summary),
-      // 검색 엔진에 임베딩 추가
-      insertEmbeddedTextsToSearchEngine(allEmbeddedTexts),
-    ]);
+    await Promise.all([summaryPromise, embeddingPromise]);
   } catch (e) {
     console.error('job failed');
     throw e;
@@ -156,6 +135,6 @@ const embeddingJob = async (
     doc.type,
     parsedContent,
   );
-
-  return parsedContentEmbeddedTexts;
+  // DB에 임베딩 결과 저장
+  await insertEmbeds(parsedContentEmbeddedTexts);
 };
