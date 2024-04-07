@@ -8,14 +8,14 @@ const config = {
 
 const GPT_MODEL = 'gpt-3.5-turbo';
 const TOKEN_LIMIT = 15000;
-const EMBEDDING_MDODEL = 'text-embedding-ada-002';
+const EMBEDDING_MODEL = 'text-embedding-ada-002';
 
 const openai = new OpenAI(config);
 
 export const getEmbedding = async (text: string) => {
   try {
     const result = await openai.embeddings.create({
-      model: EMBEDDING_MDODEL,
+      model: EMBEDDING_MODEL,
       input: text,
     });
     return result.data[0].embedding;
