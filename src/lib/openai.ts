@@ -7,6 +7,7 @@ const config = {
 };
 
 const GPT_MODEL = 'gpt-3.5-turbo';
+const TOKEN_LIMIT = 15000;
 const EMBEDDING_MDODEL = 'text-embedding-ada-002';
 
 const openai = new OpenAI(config);
@@ -35,8 +36,6 @@ export const getSummary = async (
   type: string,
   content: string,
 ) => {
-  // content가 token 3천토큰 제한을 넘기지 않도록 함
-  // TODO: 모델 바뀌면 제한 널널하게 변경
   const inputContent = getSlice(content);
 
   try {
@@ -85,30 +84,33 @@ export const getSummary = async (
 };
 
 const getSlice = (content: string): string => {
-  // content가 3000토큰을 넘기지 않도록 함
+  // GPT 3.5 turbo 토큰 제한 16,385
+  // 15000글자, 10000글자, 5000글자 시도
 
   const length = content.length;
   let inputContent = content;
-  let withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+  let withinTokenLimit = isWithinTokenLimit(inputContent, TOKEN_LIMIT);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
-    content.slice(0, 1000) +
+    content.slice(0, TOKEN_LIMIT / 3) +
     '\n\n...\n\n' +
-    content.slice(length / 2 - 500, length / 2 + 500) +
+    content.slice(length / 2 - TOKEN_LIMIT / 6, length / 2 + TOKEN_LIMIT / 6) +
     '\n\n...\n\n' +
-    content.slice(length - 1000, length);
-  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+    content.slice(length - TOKEN_LIMIT / 3, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, TOKEN_LIMIT);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
-    content.slice(0, 1000) +
+    content.slice(0, TOKEN_LIMIT / 3) +
     '\n\n...\n\n' +
-    content.slice(length - 1000, length);
-  withinTokenLimit = isWithinTokenLimit(inputContent, 3000);
+    content.slice(length - TOKEN_LIMIT / 3, length);
+  withinTokenLimit = isWithinTokenLimit(inputContent, TOKEN_LIMIT);
   if (withinTokenLimit) return inputContent;
 
   inputContent =
-    content.slice(0, 500) + '\n\n...\n\n' + content.slice(length - 500, length);
+    content.slice(0, TOKEN_LIMIT / 6) +
+    '\n\n...\n\n' +
+    content.slice(length - TOKEN_LIMIT / 6, length);
   return inputContent;
 };
