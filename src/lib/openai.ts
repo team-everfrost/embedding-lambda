@@ -7,7 +7,7 @@ const config = {
 };
 
 const GPT_MODEL = 'gpt-3.5-turbo';
-const TOKEN_LIMIT = 15000;
+const TOKEN_LIMIT = 6000; // 최대 16384
 const EMBEDDING_MODEL = 'text-embedding-ada-002';
 
 const openai = new OpenAI(config);
@@ -84,9 +84,6 @@ export const getSummary = async (
 };
 
 const getSlice = (content: string): string => {
-  // GPT 3.5 turbo 토큰 제한 16,385
-  // 15000글자, 10000글자, 5000글자 시도
-
   const length = content.length;
   let inputContent = content;
   let withinTokenLimit = isWithinTokenLimit(inputContent, TOKEN_LIMIT);
