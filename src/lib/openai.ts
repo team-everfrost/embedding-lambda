@@ -6,8 +6,8 @@ const config = {
   apiKey: process.env.OPENAI_API_KEY,
 };
 
-const GPT_MODEL = 'gpt-3.5-turbo';
-const TOKEN_LIMIT = 6000; // 최대 16384
+const GPT_MODEL = 'gpt-4o';
+const TOKEN_LIMIT = 128_000;
 const EMBEDDING_MODEL = 'text-embedding-ada-002';
 
 const openai = new OpenAI(config);
@@ -52,20 +52,35 @@ export const getSummary = async (
           content: `respond ${prompt.language}`,
         },
       ],
-      temperature: 0,
-      // TODO: tools로 변경
-      functions: prompt.functions,
-      function_call: {
-        name: 'insertMetadata',
+      temperature: prompt.temperature,
+      tools: prompt.functions.map((func) => ({
+        type: 'function',
+        function: func,
+      })),
+      tool_choice: {
+        type: 'function',
+        function: { name: 'insertMetadata' },
       },
     });
 
-    // TODO: JSON에 double quote가 들어가면 오류가 발생함.
-    const result: { oneLineSummary: string; summary: string; hashtags: [] } =
-      JSON.parse(completion.choices[0].message.function_call.arguments);
+    const toolCall = completion.choices[0].message.tool_calls?.[0];
+    if (!toolCall || toolCall.function.name !== 'insertMetadata') {
+      throw new Error('Unexpected response from OpenAI API');
+    }
+
+    const result: {
+      oneLineSummary: string;
+      summary: string;
+      hashtags: string[];
+    } = JSON.parse(toolCall.function.arguments);
 
     // onelineSummary에서 엔터 제거
     result.oneLineSummary = result.oneLineSummary.replace(/\n/g, '');
+
+    // hashtags 맨 앞에 #이 존재하는 경우 제거
+    result.hashtags = result.hashtags.map((hashtag) =>
+      hashtag.replace(/^#/, ''),
+    );
 
     return {
       summary: result.oneLineSummary + '\n' + result.summary,
