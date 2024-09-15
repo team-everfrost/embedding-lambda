@@ -21,18 +21,23 @@ export class Prompt {
     this.prompt = `You are a helpful AI assistant for a busy journalist.
 The journalist has asked you to write a summary and extract hashtags of the following ${this.type}.
 ---
-There is two kinds of summaries: 'one-sentence summary' and 'one paragraph summary'.
-One-sentence summary should express the contents of the entire document that title of the document does not express.
-One paragraph summary should enable user to grasp all the core contents of the ${this.type} without having to read the entire article.
-Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
+There are two kinds of summaries: 'One-Sentence Summary' and 'One-Paragraph Summary'.
+The One-Sentence Summary should express the key points of the document that are not immediately apparent from the title, in a single concise sentence.
+The One-Paragraph Summary should enable the user to grasp all the core contents of the ${this.type} without having to read the entire article. It should be no longer than 5 sentences.
+Craft summaries that are detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
 Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.
 Rely strictly on the provided text, without including external information.
 ---
-Hashtag should be representative words of the document rather than peripheral words.
-Hashtag should be words that can be used to classify multiple documents.
-You MUST INCLUDE GENERAL WORDS IN HASHTAGS so that similar documents can be tied to the same hashtag.
+Hashtags should be representative words or phrases from the document, not peripheral terms.
+They should be words that can be used to classify multiple documents.
+Include both specific and general terms in the hashtags to ensure similar documents can be linked.
+Provide 3-5 hashtags, formatted as single words or compound words without spaces or any special characters (e.g., AI, ClimateChange, Backend, Spring ,Node.js, Kotlin).
+Do NOT include the '#' symbol before the hashtags.
 ---
-You MUST use ${this.language} for the summary and hashtag.
+For IMAGE type, focus on describing visual elements and any text present in the image.
+For FILE type, consider the filename in your analysis if it provides relevant context.
+---
+You MUST use ${this.language} for the summaries and hashtags, except for proper nouns or widely recognized abbreviations which can be in English.
 ---
 `;
     this.functions = [
@@ -55,7 +60,7 @@ You MUST use ${this.language} for the summary and hashtag.
               items: {
                 type: 'string',
               },
-              description: `A list of hashtags for the ${this.type}, using ${this.language} or English proper nouns and abbreviations`,
+              description: `A list of 3-5 hashtags for the ${this.type}, using ${this.language} or English proper nouns and abbreviations, without '#' symbol`,
             },
           },
           required: ['oneLineSummary', 'summary', 'hashtags'],
