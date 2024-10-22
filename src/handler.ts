@@ -11,6 +11,7 @@ import {
   insertEmbeds,
 } from './lib/db';
 import { getSummary } from './lib/openai';
+import { getFileSignedUrl } from './lib/s3';
 import { promiseTimeout } from './lib/timeout';
 import { parse } from './parser';
 import { Doc, Status } from './types';
@@ -94,7 +95,10 @@ const job = async (doc: any, documentId: number) => {
 
 const summaryJob = async (doc: Doc, documentId: number, content: string) => {
   // 요약, 태그 생성
-  const summary = await getSummary(doc.title, doc.type, content)
+  const imageUrl =
+    doc.type === 'IMAGE' ? await getFileSignedUrl(doc.doc_id) : undefined;
+
+  const summary = await getSummary(doc.title, doc.type, content, imageUrl)
     .then(async ({ summary, hashtags }) => {
       await Promise.all([
         // DB에 저장

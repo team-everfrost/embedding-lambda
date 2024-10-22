@@ -35,6 +35,7 @@ export const getSummary = async (
   title: string,
   type: string,
   content: string,
+  imageUrl?: string,
 ) => {
   const inputContent = getSlice(content);
 
@@ -42,11 +43,24 @@ export const getSummary = async (
     const model = GPT_MODEL;
     const language = 'Korean'; // TODO: 사용자가 입력할 수 있도록 변경
     const prompt: Prompt = new Prompt(language, 0, title, type, inputContent);
-    const completion = await openai.chat.completions.create({
+
+    const request: OpenAI.ChatCompletionCreateParamsNonStreaming = {
       model: model,
       messages: [
         { role: 'system', content: prompt.prompt },
         { role: 'user', content: prompt.input },
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image_url',
+              image_url: {
+                url: imageUrl ?? '',
+                detail: 'auto',
+              },
+            },
+          ],
+        },
         {
           role: 'system',
           content: `respond ${prompt.language}`,
@@ -61,7 +75,14 @@ export const getSummary = async (
         type: 'function',
         function: { name: 'insertMetadata' },
       },
-    });
+    };
+
+    // 이미지 없으면 해당 프롬프트 삭제
+    if (!imageUrl) {
+      request.messages.splice(2, 1);
+    }
+
+    const completion = await openai.chat.completions.create(request);
 
     const toolCall = completion.choices[0].message.tool_calls?.[0];
     if (!toolCall || toolCall.function.name !== 'insertMetadata') {
